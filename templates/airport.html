@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Airport Intelligence</h2>
+
+<form method="GET">
+    <input type="text" name="city" placeholder="Enter city (e.g. London)" required>
+    <button type="submit">Find Airports</button>
+</form>
+
+{% if airports %}
+<h3>Best Airport Options (AI-ranked)</h3>
+
+<ol>
+{% for airport in airports %}
+    <li>
+        <strong>{{ airport.name }} ({{ airport.code }})</strong><br>
+        Distance: {{ airport.distance_km }} km<br>
+        Avg Price: ${{ airport.avg_price }}<br>
+        Intelligence Score: <strong>{{ airport.score }}</strong>
+    </li>
+    <br>
+{% endfor %}
+</ol>
+{% endif %}
+  
+
+{% if city and not airports %}
+    <p>No airport data available for "{{ city }}".</p>
+{% endif %}
+{% endblock %}
+

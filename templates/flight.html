@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Flight Price Intelligence</h2>
+
+<form method="GET">
+    <input type="text" name="origin" placeholder="Origin (e.g. NYC)" required>
+    <input type="text" name="destination" placeholder="Destination (e.g. LON)" required>
+    <button type="submit">Analyze</button>
+</form>
+
+{% if info %}
+<hr>
+<h3>{{ info.origin }} → {{ info.destination }}</h3>
+
+<p>Current Price: ${{ info.current_price }}</p>
+<p>30-day Average: ${{ info.avg_price }}</p>
+<p>Lowest (90 days): ${{ info.lowest_price }}</p>
+
+<p><strong>Trend:</strong> {{ info.trend }}</p>
+
+<h3>
+Recommendation:
+{% if info.recommendation == "BUY" %}
+🟢 BUY NOW
+{% else %}
+🟡 WAIT
+{% endif %}
+</h3>
+
+{% if info %}
+<hr>
+<h3>🔔 Watch this price</h3>
+
+<form method="POST" action="/alert">
+    <input type="hidden" name="origin" value="{{ info.origin }}">
+    <input type="hidden" name="destination" value="{{ info.destination }}">
+
+    <input type="email" name="email" placeholder="Your email" required>
+    <input type="number" name="target_price" placeholder="Target price ($)" required>
+
+    <button type="submit">Notify me when price drops</button>
+</form>
+{% endif %}
+
+
+<p>Confidence: {{ info.confidence }}%</p>
+{% endif %}
+
+{% if searched and not info %}
+<p>No data available for this route.</p>
+{% endif %}
+{% endblock %}
+
