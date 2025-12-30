@@ -1,54 +1,81 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<!-- FLIGHT TEMPLATE VERSION WITH DATE -->
+
 <h2>Flight Price Intelligence</h2>
 
-<form method="GET">
-    <input type="text" name="origin" placeholder="Origin (e.g. NYC)" required>
-    <input type="text" name="destination" placeholder="Destination (e.g. LON)" required>
-    <button type="submit">Analyze</button>
-</form>
+<div class="card">
+    <form method="GET">
+        <label>Origin</label><br>
+        <input
+            type="text"
+            name="origin"
+            placeholder="New York or NYC"
+            value="{{ request.args.get('origin','') }}"
+            required
+        >
+        <br><br>
+
+        <label>Destination</label><br>
+        <input
+            type="text"
+            name="destination"
+            placeholder="London or LON"
+            value="{{ request.args.get('destination','') }}"
+            required
+        >
+        <br><br>
+
+        <label>Departure Date</label><br>
+        <input
+            type="date"
+            name="departure_date"
+            value="{{ request.args.get('departure_date','') }}"
+            required
+        >
+        <br><br>
+
+        <button type="submit">Analyze</button>
+    </form>
+
+    <p><em>
+        Tip: You can enter a city name (e.g. New York) or airport code (e.g. NYC).
+    </em></p>
+</div>
 
 {% if info %}
-<hr>
-<h3>{{ info.origin }} → {{ info.destination }}</h3>
 
-<p>Current Price: ${{ info.current_price }}</p>
-<p>30-day Average: ${{ info.avg_price }}</p>
-<p>Lowest (90 days): ${{ info.lowest_price }}</p>
+    {% if info.error %}
+        <div class="card">
+            <p><strong>Error:</strong> {{ info.error }}</p>
+        </div>
+    {% else %}
+        <div class="card">
+            <h3>{{ info.origin }} → {{ info.destination }}</h3>
+            <p><strong>Departure Date:</strong> {{ info.departure_date }}</p>
 
-<p><strong>Trend:</strong> {{ info.trend }}</p>
+            <p><strong>Current Price:</strong> ${{ info.current_price }}</p>
+            <p><strong>Average Price:</strong> ${{ info.avg_price }}</p>
+            <p><strong>Highest Observed:</strong> ${{ info.highest_price }}</p>
 
-<h3>
-Recommendation:
-{% if info.recommendation == "BUY" %}
-🟢 BUY NOW
-{% else %}
-🟡 WAIT
-{% endif %}
-</h3>
+            <p><strong>Trend:</strong> {{ info.trend }}</p>
 
-{% if info %}
-<hr>
-<h3>🔔 Watch this price</h3>
+            <h3>
+                Recommendation:
+                {% if info.recommendation == "BUY" %}
+                    🟢 BUY
+                {% else %}
+                    🟡 WAIT
+                {% endif %}
+            </h3>
 
-<form method="POST" action="/alert">
-    <input type="hidden" name="origin" value="{{ info.origin }}">
-    <input type="hidden" name="destination" value="{{ info.destination }}">
+            <p><strong>Confidence:</strong> {{ info.confidence }}%</p>
+            <p><em>Source: {{ info.source }}</em></p>
+        </div>
+    {% endif %}
 
-    <input type="email" name="email" placeholder="Your email" required>
-    <input type="number" name="target_price" placeholder="Target price ($)" required>
-
-    <button type="submit">Notify me when price drops</button>
-</form>
-{% endif %}
-
-
-<p>Confidence: {{ info.confidence }}%</p>
 {% endif %}
 
-{% if searched and not info %}
-<p>No data available for this route.</p>
-{% endif %}
 {% endblock %}
-
