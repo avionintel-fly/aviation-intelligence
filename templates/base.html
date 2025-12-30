@@ -2,18 +2,19 @@
 <html>
 <head>
     <title>Aviation Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
 <nav>
-    <a href="/">Home</a> |
-    <a href="/flight">Flight Intelligence</a> |
+    <a href="/">Home</a>
+    <a href="/flight">Flight Intelligence</a>
     <a href="/airport">Airport Intelligence</a>
 </nav>
 
-<hr>
-
-{% block content %}{% endblock %}
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
 
 </body>
 </html>
