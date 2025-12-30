@@ -25,15 +25,16 @@ def home():
 def flight():
     origin = request.args.get("origin")
     destination = request.args.get("destination")
-    info = None
+    departure_date = request.args.get("departure_date")
 
-    if origin and destination:
-        info = get_price_intelligence(origin, destination)
+    info = None
+    if origin and destination and departure_date:
+        info = get_price_intelligence(origin, destination, departure_date)
 
     return render_template(
         "flight.html",
         info=info,
-        searched=bool(origin and destination)
+        searched=bool(origin and destination and departure_date)
     )
 
 # -----------------------

@@ -1,32 +1,24 @@
 from real_prices import get_real_price
 
 
-def get_price_intelligence(origin, destination):
-    """
-    Real flight price intelligence using Amadeus data.
-    Returns BUY / WAIT recommendation with confidence.
-    """
-
-    # Normalize input (Amadeus requires uppercase IATA codes)
+def get_price_intelligence(origin, destination, departure_date):
     origin = origin.upper().strip()
     destination = destination.upper().strip()
 
-    # Fetch real prices
-    real = get_real_price(origin, destination)
+    real = get_real_price(origin, destination, departure_date)
 
-    # If API failed or returned nothing
     if not real or "error" in real:
         return {
             "origin": origin,
             "destination": destination,
-            "error": "Unable to fetch real-time prices at the moment."
+            "departure_date": departure_date,
+            "error": "No pricing data available for this date."
         }
 
     current_price = real["min_price"]
     avg_price = real["avg_price"]
     highest_price = real["max_price"]
 
-    # Simple but real intelligence logic
     if current_price < avg_price * 0.95:
         trend = "Below average"
         recommendation = "BUY"
@@ -43,6 +35,7 @@ def get_price_intelligence(origin, destination):
     return {
         "origin": origin,
         "destination": destination,
+        "departure_date": departure_date,
         "current_price": round(current_price, 2),
         "avg_price": round(avg_price, 2),
         "lowest_price": round(current_price, 2),
