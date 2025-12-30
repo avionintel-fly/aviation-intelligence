@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<!-- FLIGHT TEMPLATE VERSION WITH DATE -->
+<!-- FLIGHT TEMPLATE WITH DATE SANITY & CONFIDENCE -->
 
 <h2>Flight Price Intelligence</h2>
 
@@ -41,7 +41,7 @@
     </form>
 
     <p><em>
-        Tip: You can enter a city name (e.g. New York) or airport code (e.g. NYC).
+        Tip: Enter a city name (e.g. New York) or airport code (e.g. NYC).
     </em></p>
 </div>
 
@@ -53,8 +53,15 @@
         </div>
     {% else %}
         <div class="card">
+
             <h3>{{ info.origin }} → {{ info.destination }}</h3>
             <p><strong>Departure Date:</strong> {{ info.departure_date }}</p>
+
+            <!-- 🔵 DATE SANITY INTELLIGENCE -->
+            <p><strong>Booking Window:</strong> {{ info.window }}</p>
+            <p><em>{{ info.note }}</em></p>
+
+            <hr>
 
             <p><strong>Current Price:</strong> ${{ info.current_price }}</p>
             <p><strong>Average Price:</strong> ${{ info.avg_price }}</p>
@@ -73,6 +80,7 @@
 
             <p><strong>Confidence:</strong> {{ info.confidence }}%</p>
             <p><em>Source: {{ info.source }}</em></p>
+
         </div>
     {% endif %}
 
